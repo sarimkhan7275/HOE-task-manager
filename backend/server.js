@@ -1,27 +1,25 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import cors from "cors";
 import taskRoutes from "./routes/taskRoutes.js";
+import cors from "cors"
 
 dotenv.config();
-
 const app = express();
 
-// Middleware
-app.use(cors({ origin: process.env.FRONTEND_URL }));
 app.use(express.json());
+app.use(cors())
 
 // Routes
 app.use("/api/tasks", taskRoutes);
 
-
-// Connect DB and start server
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    app.listen(process.env.PORT, () =>
-      console.log(`Server running on port ${process.env.PORT}`)
-    );
-  })
-  .catch((err) => console.error(err));
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => {
+  console.log("✅ MongoDB connected");
+  app.listen(process.env.PORT, () => console.log("Server running on port 4000"));
+})
+.catch(err => console.error(err));
