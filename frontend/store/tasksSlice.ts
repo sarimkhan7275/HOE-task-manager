@@ -36,7 +36,7 @@ export const fetchTasks = createAsyncThunk("tasks/fetch", async () => {
 
 export const createTask = createAsyncThunk(
   "tasks/create",
-  async (task: { title: string; description: string; status: "todo" | "inProgress" | "done" }) => {
+  async (task: { title: string; description: string; status: "todo" | "inProgress" | "done" | string }) => {
     const res = await axios.post<Task>(`${BASE_URL}/api/tasks`, task);
     return res.data;
   }

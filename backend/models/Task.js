@@ -8,6 +8,6 @@ const taskSchema = new mongoose.Schema({
     enum: ["todo", "inProgress", "done"],
     default: "todo",
   }
-}, { timestamps: true });  // <-- adds createdAt & updatedAt automatically
+}, { timestamps: true }); 
 
 export default mongoose.model("Task", taskSchema);

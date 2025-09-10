@@ -1,9 +1,10 @@
 import express from "express";
 import Task from "../models/Task.js";
 
+
 const router = express.Router();
 
-// ➤ Create Task
+// create task
 router.post("/", async (req, res) => {
   try {
     const task = new Task(req.body);
@@ -14,7 +15,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ➤ Get All Tasks (Grouped with id, status, date)
+// ➤ get all task
 router.get("/", async (req, res) => {
   try {
     const tasks = await Task.find();
@@ -24,7 +25,7 @@ router.get("/", async (req, res) => {
       title: t.title,
       description: t.description,
       status: t.status,
-      date: t.updatedAt   // last modified date
+      date: t.updatedAt 
     });
 
     const grouped = {
@@ -40,7 +41,7 @@ router.get("/", async (req, res) => {
 });
 
 
-// ➤ Update Task (edit title/description/status)
+// update task
 router.put("/:id", async (req, res) => {
   try {
     const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -50,7 +51,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-// ➤ Change Task Status (e.g., todo → inProgress)
+// change task status
 router.patch("/:id/status", async (req, res) => {
   try {
     const { status } = req.body;
@@ -68,7 +69,7 @@ router.patch("/:id/status", async (req, res) => {
   }
 });
 
-// ➤ Delete Task
+// delete taks 
 router.delete("/:id", async (req, res) => {
   try {
     await Task.findByIdAndDelete(req.params.id);
