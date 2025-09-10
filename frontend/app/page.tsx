@@ -76,7 +76,7 @@ export default function Home() {
       });
 
       setSummary(response.choices[0].message.content ?? "No summary generated.");
-    } catch (err: any) {
+    } catch (err) {
       console.error("AI Summarizer Error:", err);
       setSummary("⚠️ AI summarizer failed. Please try again later.");
     } finally {

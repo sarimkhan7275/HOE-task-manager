@@ -50,7 +50,7 @@ export function AddTaskDialog({ isOpen, setIsOpen, status }: AddTaskDialogProps)
       setDescription("");
       setIsOpen(false);
       dispatch(fetchTasks());
-    } catch (err) {
+    } catch{
       toast.error("Failed to create task ❌");
     }
   };

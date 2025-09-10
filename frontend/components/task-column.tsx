@@ -17,7 +17,6 @@ export const TaskColumn = ({ data, status }: { data: Task[]; status: string }) =
       ? "In Progress"
       : "Done";
 
-
   return (
     <div className="min-w-[300px] flex flex-col rounded-xl bg-zinc-900 border border-border w-full shadow-sm">
       {/* Header */}

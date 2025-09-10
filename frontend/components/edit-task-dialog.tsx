@@ -53,7 +53,7 @@ export function EditTaskDialog({ task, isOpen, setIsOpen }: EditTaskDialogProps)
 
       toast.success("Task updated successfully ✅")
       setIsOpen(false)
-    } catch (err) {
+    } catch {
       toast.error("Failed to update task ❌")
     }
   }

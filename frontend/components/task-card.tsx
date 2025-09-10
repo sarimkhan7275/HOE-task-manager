@@ -29,7 +29,7 @@ export const TaskCard = ({ task, status }: { task: Task; status: string }) => {
       await dispatch(deleteTask(task.id)).unwrap();
       dispatch(fetchTasks());
       toast.success("Task deleted successfully 🗑️");
-    } catch (err) {
+    } catch{
       toast.error("Failed to delete task ❌");
     }
   };
@@ -39,7 +39,7 @@ export const TaskCard = ({ task, status }: { task: Task; status: string }) => {
       await dispatch(updateTaskStatus({ id: task.id, status: newStatus })).unwrap();
       dispatch(fetchTasks());
       toast.success(`Task moved to ${newStatus} ✅`);
-    } catch (err) {
+    } catch{
       toast.error("Failed to move task ❌");
     }
   };
