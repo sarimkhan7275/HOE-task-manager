@@ -59,18 +59,3 @@ Includes **AI-powered task summarization** with OpenAI, allowing users to genera
 - MongoDB → [MongoDB Atlas](https://www.mongodb.com/atlas)
 
 ---
-
-## 📂 Project Structure
-.
-├── frontend/ # Next.js + Redux Toolkit app
-│ ├── app/ # Next.js App Router pages
-│ ├── components/ # UI components (TaskCard, TaskColumn, dialogs)
-│ ├── store/ # Redux slices (tasksSlice, hooks)
-│ └── ...
-│
-├── backend/ # Express API
-│ ├── models/Task.js # Mongoose schema
-│ ├── routes/tasks.js # CRUD routes
-│ └── server.js # Express entry
-│
-└── README.md

@@ -16,6 +16,7 @@ import OpenAI from "openai";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Skeleton } from "@/components/ui/skeleton"; 
+import { Footer } from "@/components/footer";
 
 export default function Home() {
   const dispatch = useAppDispatch();
@@ -108,13 +109,13 @@ export default function Home() {
 
         {loading ? (
           <div className="flex gap-6 overflow-x-auto">
-            {[1, 2, 3].map((col) => (
+            {[1, 2, 3].map((el) => (
               <div
-                key={col}
-                className="w-[320px] flex-shrink-0 rounded-lg border border-border p-4 space-y-4"
+                key={el}
+                className="w-[150px] md:w-full h-[calc(100vh-150px)] rounded-lg border border-border p-4 space-y-4"
               >
                 <Skeleton className="h-6 w-1/2 bg-zinc-900 " />
-                {[1, 2, 3].map((i) => (
+                {[1, 2, 3,4,5].map((i) => (
                   <Skeleton key={i} className="h-24 w-full rounded-md bg-zinc-600 " />
                 ))}
               </div>
@@ -156,6 +157,7 @@ export default function Home() {
           </div>
         </DialogContent>
       </Dialog>
+      <Footer/>
     </main>
   );
 }
