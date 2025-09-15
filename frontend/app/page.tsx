@@ -72,17 +72,25 @@ export default function Home() {
     setIsDialogOpen(true);
     try {
       const prompt = `
-        You are an assistant that summarizes tasks into a short project status report.
-        Format with **bold** titles, *italic* highlights, and bullet points.
+        You are an expert project manager. Analyze the following tasks and write a short but appealing **Project Status Report**.
+        
+        🔹 Structure:
+        - A short **executive summary** in 2–3 lines.
+        - Clear **sections with bold titles** (Todo, In Progress, Done).
+        - *Insightful comments* about progress (e.g., blockers, progress pace, bottlenecks).
+        - Use ✅, ⚠️, ⏳ icons where relevant for visual appeal.
+        - Keep it concise but engaging.
+
+        🔹 Tasks:
 
         Todo:
-        ${tasks.todo.map((t) => `- ${t.title}`).join("\n")}
+        ${tasks.todo.map((t) => `- ${t.title} | ${t.description || "No description"}`).join("\n")}
 
         In Progress:
-        ${tasks.inProgress.map((t) => `- ${t.title}`).join("\n")}
+        ${tasks.inProgress.map((t) => `- ${t.title} | ${t.description || "No description"}`).join("\n")}
 
         Done:
-        ${tasks.done.map((t) => `- ${t.title}`).join("\n")}
+        ${tasks.done.map((t) => `- ${t.title} | ${t.description || "No description"}`).join("\n")}
       `;
 
       const client = new OpenAI({

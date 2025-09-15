@@ -28,7 +28,7 @@ const initialState: TasksState = {
   error: null,
 };
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
