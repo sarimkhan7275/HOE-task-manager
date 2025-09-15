@@ -29,7 +29,7 @@ export const TaskCard = ({ task, status }: { task: Task; status: string }) => {
       await dispatch(deleteTask(task.id)).unwrap();
       dispatch(fetchTasks());
       toast.success("Task deleted successfully 🗑️");
-    } catch{
+    } catch {
       toast.error("Failed to delete task ❌");
     }
   };
@@ -39,7 +39,7 @@ export const TaskCard = ({ task, status }: { task: Task; status: string }) => {
       await dispatch(updateTaskStatus({ id: task.id, status: newStatus })).unwrap();
       dispatch(fetchTasks());
       toast.success(`Task moved to ${newStatus} ✅`);
-    } catch{
+    } catch {
       toast.error("Failed to move task ❌");
     }
   };
@@ -63,14 +63,28 @@ export const TaskCard = ({ task, status }: { task: Task; status: string }) => {
     ],
   };
 
+  // Priority colors
+  const priorityColors: Record<string, string> = {
+    P1: "bg-red-500",
+    P2: "bg-orange-500",
+    P3: "bg-green-500",
+  };
+
   return (
     <>
-      <Card className="bg-card hover:shadow-md transition-shadow">
+      <Card className="bg-card hover:shadow-md transition-shadow rounded-2xl ">
         <CardHeader className="pb-2">
           <div className="flex items-start justify-between">
-            <h3 className="font-medium text-card-foreground text-balance">
-              {task.title}
-            </h3>
+            <div className="flex items-center gap-2">
+              {/* Priority dot */}
+              <span
+                className={`h-3 w-3 rounded-full ${priorityColors[task.priority] || "bg-gray-400"}`}
+                title={`Priority: ${task.priority}`}
+              />
+              <h3 className="font-medium text-card-foreground text-balance">
+                {task.title}
+              </h3>
+            </div>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -109,13 +123,15 @@ export const TaskCard = ({ task, status }: { task: Task; status: string }) => {
           <p className="text-sm text-muted-foreground mb-3 text-pretty">
             {task.description}
           </p>
-          <p className="text-xs text-muted-foreground">
-            {new Date(task.date).toLocaleString("en-US", {
-              dateStyle: "medium",
-              timeStyle: "short",
-            })}
-          </p>
-
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <p>
+              {new Date(task.date).toLocaleString("en-US", {
+                dateStyle: "medium",
+                timeStyle: "short",
+              })}
+            </p>
+            <p className="font-medium bg-black rounded-sm p-1 ">{task.priority}</p>
+          </div>
         </CardContent>
       </Card>
 

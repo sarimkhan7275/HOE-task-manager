@@ -1,5 +1,4 @@
-import { BASE_URL } from "@/utils/constant";
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 export type Task = {
@@ -8,11 +7,12 @@ export type Task = {
   description: string;
   status: "todo" | "inProgress" | "done";
   date: string;
+  priority: "P1" | "P2" | "P3";
 };
 
 export type GroupedTasks = {
   todo: Task[];
-  "inProgress": Task[];
+  inProgress: Task[];
   done: Task[];
 };
 
@@ -28,16 +28,28 @@ const initialState: TasksState = {
   error: null,
 };
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+
+// --- Utility to attach token ---
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 // --- Thunks (API calls) ---
 export const fetchTasks = createAsyncThunk("tasks/fetch", async () => {
-  const res = await axios.get<GroupedTasks>(`${BASE_URL}/api/tasks`);
+  const res = await axios.get<GroupedTasks>(`${API_URL}/api/tasks`, {
+    headers: getAuthHeaders(),
+  });
   return res.data;
 });
 
 export const createTask = createAsyncThunk(
   "tasks/create",
-  async (task: { title: string; description: string; status: "todo" | "inProgress" | "done" | string }) => {
-    const res = await axios.post<Task>(`${BASE_URL}/api/tasks`, task);
+  async (task: { title: string; description: string; status: "todo" | "inProgress" | "done" | string, priority: "P1" | "P2" | "P3" | string;  }) => {
+    const res = await axios.post<Task>(`${API_URL}/api/tasks`, task, {
+      headers: getAuthHeaders(),
+    });
     return res.data;
   }
 );
@@ -45,7 +57,9 @@ export const createTask = createAsyncThunk(
 export const updateTask = createAsyncThunk(
   "tasks/update",
   async ({ id, updates }: { id: string; updates: Partial<Task> }) => {
-    const res = await axios.put<Task>(`${BASE_URL}/api/tasks/${id}`, updates);
+    const res = await axios.put<Task>(`${API_URL}/api/tasks/${id}`, updates, {
+      headers: getAuthHeaders(),
+    });
     return res.data;
   }
 );
@@ -53,15 +67,33 @@ export const updateTask = createAsyncThunk(
 export const updateTaskStatus = createAsyncThunk(
   "tasks/updateStatus",
   async ({ id, status }: { id: string; status: "todo" | "inProgress" | "done" }) => {
-    const res = await axios.patch<Task>(`${BASE_URL}/api/tasks/${id}/status`, { status });
+    const res = await axios.patch<Task>(
+      `${API_URL}/api/tasks/${id}/status`,
+      { status },
+      { headers: getAuthHeaders() }
+    );
     return res.data;
   }
 );
 
 export const deleteTask = createAsyncThunk("tasks/delete", async (id: string) => {
-  await axios.delete(`${BASE_URL}/api/tasks/${id}`);
+  await axios.delete(`${API_URL}/api/tasks/${id}`, {
+    headers: getAuthHeaders(),
+  });
   return id;
 });
+
+
+export const bulkUpdatePriority = createAsyncThunk(
+  "tasks/bulkUpdatePriority",
+  async (updates: { id: string; priority: "P1" | "P2" | "P3" }[]) => {
+    const res = await axios.post(`${API_URL}/api/tasks/bulk-priority`,
+      { updates },
+      { headers: getAuthHeaders() }
+    );
+    return res.data.tasks as Task[];
+  }
+);
 
 // --- Slice ---
 const tasksSlice = createSlice({
@@ -115,6 +147,20 @@ const tasksSlice = createSlice({
         state.tasks[key] = state.tasks[key].filter((t) => t.id !== action.payload);
       });
     });
+
+    builder.addCase(bulkUpdatePriority.fulfilled, (state, action)=>{
+      const updatedTasks = action.payload;
+      
+      updatedTasks.forEach((updated) => {
+        // remove task from old group
+        (Object.keys(state.tasks) as (keyof GroupedTasks)[]).forEach((key) => {
+          state.tasks[key] = state.tasks[key].filter((t) => t.id !== updated.id);
+        });
+        // re-add task in correct group (status stays same, only priority changes)
+        state.tasks[updated.status].push(updated);
+      });
+
+    })
   },
 });
 
