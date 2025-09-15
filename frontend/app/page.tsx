@@ -114,11 +114,11 @@ export default function Home() {
     <main className="min-h-screen flex flex-col bg-background">
       <div className="flex-1 p-4 md:p-6">
         <div className="mx-auto max-w-7xl">
-          {/* Header */}
+
           <header className="mb-6 flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-foreground">AI Task Manager</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-foreground">AI TaskFlow</h1>
                 <p className="text-muted-foreground text-sm md:text-base">
                   Organize your tasks and summarize with AI
                 </p>
@@ -141,7 +141,6 @@ export default function Home() {
               </DropdownMenu>
             </div>
 
-            {/* Buttons Row (scrollable on mobile) */}
             <div className="flex items-center gap-3 overflow-x-auto ">
               <PrioritizeByAI />
               <Button
@@ -157,14 +156,14 @@ export default function Home() {
 
           {/* Task Columns */}
           {loading ? (
-            <div className="flex gap-4 overflow-x-auto">
+            <div className="flex gap-4 overflow-x-auto ">
               {[1, 2, 3].map((el) => (
                 <div
                   key={el}
-                  className="min-w-[280px] h-[500px] rounded-lg border border-border p-4 space-y-4 flex-shrink-0"
+                  className="min-w-[280px] md:w-full h-[500px] rounded-lg border border-border p-4 space-y-4 "
                 >
                   <Skeleton className="h-6 w-1/2 bg-zinc-900" />
-                  {[1, 2, 3, 4, 5].map((i) => (
+                  {[1, 2, 3, 4].map((i) => (
                     <Skeleton key={i} className="h-20 w-full rounded-md bg-zinc-600" />
                   ))}
                 </div>

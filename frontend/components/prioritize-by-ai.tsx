@@ -176,7 +176,6 @@ setResults(merged);
                     </p>
                   </div>
 
-                  {/* New Priority Dropdown */}
                   <Select
                     value={r.newPriority}
                     onValueChange={(val: Priority) =>

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { Eye, EyeOff, CheckCircle2, User, Mail, Lock } from "lucide-react"
+import { Eye, EyeOff, User, Mail, Lock } from "lucide-react"
 import Link from "next/link"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { useRouter } from "next/navigation"
@@ -144,7 +144,7 @@ export function RegisterForm() {
 
           <Button
             type="submit"
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2.5 transition-colors"
+            className="w-full text-primary-foreground font-medium py-2.5 transition-colors"
             disabled={
               !formData.fullName ||
               !formData.email ||
@@ -162,7 +162,7 @@ export function RegisterForm() {
         <Separator className="bg-border" />
         <p className="text-center text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Link href="/login" className="text-primary hover:text-primary/80 font-medium transition-colors">
+          <Link href="/login" className="text-indigo-500 hover:text-primary/80 font-medium transition-colors">
             Sign in here
           </Link>
         </p>

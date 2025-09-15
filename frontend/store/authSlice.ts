@@ -1,9 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL
 
-// --- Async Thunks --- //
 export const registerUser = createAsyncThunk(
   "/api/auth/register",
   async ({ name, email, password }: { name: string; email: string; password: string }, thunkAPI) => {
@@ -22,7 +21,6 @@ export const loginUser = createAsyncThunk(
     try {
       const res = await axios.post(`${API_URL}/api/auth/login`, { email, password });
 
-      // Save session to localStorage
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
@@ -33,7 +31,6 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// --- Initial State Hydration --- //
 let storedUser = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("user") as string) : null
 let storedToken = typeof window !== "undefined" ? localStorage.getItem("token") : null;
 

@@ -22,18 +22,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Loader2 } from "lucide-react"; 
 
 interface AddTaskDialogProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
   status: string;
-
 }
 
 export function AddTaskDialog({ isOpen, setIsOpen, status }: AddTaskDialogProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState<"P1" | "P2" | "P3">("P3");
+  const [loading, setLoading] = useState(false); 
   const dispatch = useAppDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,6 +46,7 @@ export function AddTaskDialog({ isOpen, setIsOpen, status }: AddTaskDialogProps)
     }
 
     try {
+      setLoading(true); 
       await dispatch(
         createTask({
           title,
@@ -62,6 +64,8 @@ export function AddTaskDialog({ isOpen, setIsOpen, status }: AddTaskDialogProps)
       dispatch(fetchTasks());
     } catch {
       toast.error("Failed to create task ❌");
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -101,7 +105,10 @@ export function AddTaskDialog({ isOpen, setIsOpen, status }: AddTaskDialogProps)
           </div>
           <div className="space-y-2">
             <Label>Priority</Label>
-            <Select value={priority} onValueChange={(val) => setPriority(val as "P1" | "P2" | "P3")}>
+            <Select
+              value={priority}
+              onValueChange={(val) => setPriority(val as "P1" | "P2" | "P3")}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select priority" />
               </SelectTrigger>
@@ -119,10 +126,25 @@ export function AddTaskDialog({ isOpen, setIsOpen, status }: AddTaskDialogProps)
             </Select>
           </div>
           <div className="flex justify-end space-x-2">
-            <Button type="button" className="rounded-full " variant="outline" onClick={handleClose}>
+            <Button
+              type="button"
+              className="rounded-full"
+              variant="outline"
+              onClick={handleClose}
+              disabled={loading}
+            >
               Cancel
             </Button>
-            <Button type="submit">Add Task</Button>
+            <Button type="submit" disabled={loading} className="rounded-full">
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Adding...
+                </>
+              ) : (
+                "Add Task"
+              )}
+            </Button>
           </div>
         </form>
       </DialogContent>

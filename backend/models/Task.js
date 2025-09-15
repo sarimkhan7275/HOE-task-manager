@@ -12,7 +12,7 @@ const taskSchema = new mongoose.Schema(
     priority: {
       type: String,
       enum: ["P1", "P2", "P3"],
-      default: "P3", // default lowest
+      default: "P3", 
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,

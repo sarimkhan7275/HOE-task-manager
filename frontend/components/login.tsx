@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { Eye, EyeOff, CheckCircle2, User, Mail, Lock } from "lucide-react"
+import { Eye, EyeOff, Mail, Lock } from "lucide-react"
 import Link from "next/link"
 import { useAppDispatch, useAppSelector } from "@/store/hooks"
 import { useRouter } from "next/navigation";
@@ -17,7 +17,7 @@ import { toast } from "sonner"
 
 export function LoginForm() {
     const dispatch = useAppDispatch();
-    const { loading, error, token } = useAppSelector((s) => s.auth);
+    const { loading, error } = useAppSelector((s) => s.auth);
     const [showPassword, setShowPassword] = useState(false)
     const [formData, setFormData] = useState({
         email: "",
@@ -43,9 +43,9 @@ export function LoginForm() {
         <Card className="bg-card border-border shadow-2xl">
             {error && <p className="text-red-500 text-sm">{error}</p>}
         <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-card-foreground">Create Account</CardTitle>
+            <CardTitle className="text-2xl font-bold text-card-foreground">Login</CardTitle>
             <CardDescription className="text-muted-foreground">
-            Enter your details to get started with TaskFlow
+            Enter your credentials to get started with TaskFlow
             </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -96,7 +96,7 @@ export function LoginForm() {
 
             <Button
                 type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-medium py-2.5 transition-colors"
+                className="w-full text-primary-foreground font-medium py-2.5 transition-colors"
                 disabled={
                 !formData.email ||
                 !formData.password
@@ -110,8 +110,8 @@ export function LoginForm() {
         <CardFooter className="flex flex-col space-y-4">
             <Separator className="bg-border" />
             <p className="text-center text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <Link href="/register" className="text-primary hover:text-primary/80 font-medium transition-colors">
+            Don&aps;t have an account?{" "}
+            <Link href="/register" className="text-indigo-500 transition-colors">
                 Sign up here
             </Link>
             </p>

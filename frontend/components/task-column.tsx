@@ -19,7 +19,7 @@ export const TaskColumn = ({ data, status }: { data: Task[]; status: string }) =
 
   return (
     <div className="min-w-[300px] min-h-[450px] md:min-h-[600px] flex flex-col rounded-xl bg-zinc-900 border border-border w-full shadow-sm">
-      {/* Header */}
+      
       <div className="flex items-center justify-between p-4 border-b border-border sticky overflow-hidden rounded-t-4xl top-0 bg-zinc-900 z-10">
         <h2 className="text-lg font-semibold text-foreground">{title}</h2>
         <span className="text-sm text-muted-foreground bg-background px-2 py-1 rounded">

@@ -4,7 +4,7 @@ import auth from "../middlewares/auth.js";
 
 const router = express.Router();
 
-// ➤ Create Task (user-specific)
+// Create Task 
 router.post("/", auth, async (req, res) => {
   try {
     const { title, description, status, priority } = req.body;
@@ -13,7 +13,7 @@ router.post("/", auth, async (req, res) => {
       description,
       status,
       priority: priority || "P3",
-      user: req.user.id, // from auth middleware
+      user: req.user.id, 
     });
     await task.save();
     res.status(201).json(task);
@@ -22,11 +22,10 @@ router.post("/", auth, async (req, res) => {
   }
 });
 
-// ➤ Get All Tasks (only for logged-in user)
+// Get All Tasks 
 router.get("/", auth, async (req, res) => {
   try {
-    const tasks = await Task.find({ user: req.user.id }); // 👈 filter by user
-    console.log("->>>>>>>>>>>",tasks)
+    const tasks = await Task.find({ user: req.user.id });
     const formatTask = (t) => ({
       id: t._id,
       title: t.title,
@@ -48,13 +47,13 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// ➤ Update Task (user-specific)
+//  Update Task 
 router.put("/:id", auth, async (req, res) => {
   try {
     const updates = req.body;
 
     const task = await Task.findOneAndUpdate(
-      { _id: req.params.id, user: req.user.id }, // filter by logged-in user
+      { _id: req.params.id, user: req.user.id }, 
       updates,
       { new: true }
     );
@@ -71,7 +70,7 @@ router.put("/:id", auth, async (req, res) => {
 
 
 
-// ➤ Change Task Status
+//Change Task Status
 router.patch("/:id/status", auth, async (req, res) => {
   try {
     const { status } = req.body;
@@ -80,7 +79,7 @@ router.patch("/:id/status", auth, async (req, res) => {
     }
 
     const task = await Task.findOneAndUpdate(
-      { _id: req.params.id, user: req.user.id }, // 👈 scoped
+      { _id: req.params.id, user: req.user.id }, 
       { status },
       { new: true }
     );
@@ -91,12 +90,12 @@ router.patch("/:id/status", auth, async (req, res) => {
   }
 });
 
-// ➤ Delete Task
+// Delete Task
 router.delete("/:id", auth, async (req, res) => {
   try {
     const task = await Task.findOneAndDelete({
       _id: req.params.id,
-      user : req.user.id, // 👈 scoped
+      user : req.user.id, 
     });
     if (!task) return res.status(404).json({ error: "Task not found" });
     res.json({ message: "Task deleted" });
@@ -107,11 +106,10 @@ router.delete("/:id", auth, async (req, res) => {
 
 
 
-// ➤ Bulk Update Task Priorities
+// Bulk Update Task Priorities
 router.post("/bulk-priority", auth, async (req, res) => {
   try {
     const { updates } = req.body;
-    // updates = [{ id: "123", priority: "P1" }, { id: "456", priority: "P2" }]
 
     if (!Array.isArray(updates)) {
       return res.status(400).json({ error: "Invalid updates format" });
@@ -121,7 +119,7 @@ router.post("/bulk-priority", auth, async (req, res) => {
 
     for (const u of updates) {
       const task = await Task.findOneAndUpdate(
-        { _id: u.id, user: req.user.id },   // ✅ FIX: use `user`
+        { _id: u.id, user: req.user.id },  
         { priority: u.priority },
         { new: true }
       );

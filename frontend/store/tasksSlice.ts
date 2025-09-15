@@ -30,13 +30,11 @@ const initialState: TasksState = {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
 
-// --- Utility to attach token ---
 const getAuthHeaders = () => {
   const token = localStorage.getItem("token");
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
-// --- Thunks (API calls) ---
 export const fetchTasks = createAsyncThunk("tasks/fetch", async () => {
   const res = await axios.get<GroupedTasks>(`${API_URL}/api/tasks`, {
     headers: getAuthHeaders(),
@@ -95,7 +93,6 @@ export const bulkUpdatePriority = createAsyncThunk(
   }
 );
 
-// --- Slice ---
 const tasksSlice = createSlice({
   name: "tasks",
   initialState,
@@ -156,7 +153,6 @@ const tasksSlice = createSlice({
         (Object.keys(state.tasks) as (keyof GroupedTasks)[]).forEach((key) => {
           state.tasks[key] = state.tasks[key].filter((t) => t.id !== updated.id);
         });
-        // re-add task in correct group (status stays same, only priority changes)
         state.tasks[updated.status].push(updated);
       });
 

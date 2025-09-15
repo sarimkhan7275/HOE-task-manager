@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Loader2 } from "lucide-react"
 
 interface EditTaskDialogProps {
   task: Task
@@ -29,14 +30,14 @@ export function EditTaskDialog({ task, isOpen, setIsOpen }: EditTaskDialogProps)
 
   const [title, setTitle] = useState(task.title)
   const [description, setDescription] = useState(task.description)
-  const [priority, setPriority] = useState(task.priority || "P3")
+  const [priority, setPriority] = useState<"P1" | "P2" | "P3">(task.priority || "P3")
+  const [loading, setLoading] = useState(false) 
 
   useEffect(() => {
     setTitle(task.title)
     setDescription(task.description)
     setPriority(task.priority || "P3")
   }, [task])
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -45,8 +46,9 @@ export function EditTaskDialog({ task, isOpen, setIsOpen }: EditTaskDialogProps)
       toast.error("Title cannot be empty!")
       return
     }
-    
+
     try {
+      setLoading(true) 
       await dispatch(
         updateTask({
           id: task.id,
@@ -59,13 +61,13 @@ export function EditTaskDialog({ task, isOpen, setIsOpen }: EditTaskDialogProps)
         })
       ).unwrap()
 
-      // ✅ Refetch all tasks
       dispatch(fetchTasks())
-
       toast.success("Task updated successfully ✅")
       setIsOpen(false)
     } catch {
       toast.error("Failed to update task ❌")
+    } finally {
+      setLoading(false) 
     }
   }
 
@@ -111,31 +113,49 @@ export function EditTaskDialog({ task, isOpen, setIsOpen }: EditTaskDialogProps)
           </div>
           <div className="space-y-2">
             <Label>Priority</Label>
-            <Select value={priority} onValueChange={(val: "P1" | "P2" | "P3") => setPriority(val)}>
+            <Select
+              value={priority}
+              onValueChange={(val: "P1" | "P2" | "P3") => setPriority(val)}
+            >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select priority" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="P1">
-                  <span className={`h-3 w-3 rounded-full inline-block mr-2 bg-red-500`} />
+                  <span className="h-3 w-3 rounded-full inline-block mr-2 bg-red-500" />
                   <span className={priorityColors["P1"]}>P1 (High)</span>
                 </SelectItem>
                 <SelectItem value="P2">
-                  <span className={`h-3 w-3 rounded-full inline-block mr-2 bg-orange-500`} />
+                  <span className="h-3 w-3 rounded-full inline-block mr-2 bg-orange-500" />
                   <span className={priorityColors["P2"]}>P2 (Medium)</span>
                 </SelectItem>
                 <SelectItem value="P3">
-                  <span className={`h-3 w-3 rounded-full inline-block mr-2 bg-green-500`} />
+                  <span className="h-3 w-3 rounded-full inline-block mr-2 bg-green-500" />
                   <span className={priorityColors["P3"]}>P3 (Low)</span>
                 </SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="flex justify-end space-x-2">
-            <Button type="button" className="rounded-full " variant="outline" onClick={handleClose}>
+            <Button
+              type="button"
+              className="rounded-full"
+              variant="outline"
+              onClick={handleClose}
+              disabled={loading}
+            >
               Cancel
             </Button>
-            <Button type="submit">Update Task</Button>
+            <Button type="submit" disabled={loading} className="rounded-full">
+              {loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Updating...
+                </>
+              ) : (
+                "Update Task"
+              )}
+            </Button>
           </div>
         </form>
       </DialogContent>

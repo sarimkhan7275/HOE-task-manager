@@ -44,7 +44,6 @@ export const TaskCard = ({ task, status }: { task: Task; status: string }) => {
     }
   };
 
-  // Define possible moves with icons
   const statusMoves: Record<
     string,
     { label: string; value: "todo" | "inProgress" | "done"; icon: React.ElementType }[]
@@ -63,7 +62,6 @@ export const TaskCard = ({ task, status }: { task: Task; status: string }) => {
     ],
   };
 
-  // Priority colors
   const priorityColors: Record<string, string> = {
     P1: "bg-red-500",
     P2: "bg-orange-500",
