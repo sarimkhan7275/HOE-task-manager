@@ -42,7 +42,7 @@ export function EditTaskDialog({ task, isOpen, setIsOpen }: EditTaskDialogProps)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!title.trim()) {
+    if (!title){
       toast.error("Title cannot be empty!")
       return
     }

@@ -44,55 +44,27 @@ export function PrioritizeByAI() {
     setLoading(true);
 
     try {
-      const prompt = `
-        You are an assistant that prioritizes tasks.
-        Assign each task a priority: P1 (High), P2 (Medium), P3 (Low).
-        Respond in JSON array format: [{ "id": "...", "newPriority": "P1" }].
-        
-        Tasks:
-        ${[...tasks.todo, ...tasks.inProgress, ...tasks.done]
-          .map((t) => `- ${t.id}: ${t.title} (Current: ${t.priority || "P3"})`)
-          .join("\n")}
-      `;
+      const allTasks = [...tasks.todo, ...tasks.inProgress, ...tasks.done];
 
-      const client = new OpenAI({
-        apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-        dangerouslyAllowBrowser: true,
+      const res = await fetch("/api/prioritize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tasks: allTasks }),
       });
 
-const response = await client.chat.completions.create({
-  model: "gpt-4o-mini",
-  messages: [{ role: "user", content: prompt }],
-});
+      const data = await res.json();
 
-const raw = response.choices[0].message.content || "[]";
+      const merged: AIResult[] = data.results.map((p: any) => {
+        const task = allTasks.find((t) => t.id === p.id);
+        return {
+          id: p.id,
+          title: task?.title || "Unknown Task",
+          oldPriority: task?.priority || "P3",
+          newPriority: p.newPriority,
+        };
+      });
 
-// 🛠 Remove markdown fences
-const cleaned = raw.replace(/```json|```/g, "").trim();
-
-let parsed: { id: string; newPriority: Priority }[] = [];
-
-try {
-  parsed = JSON.parse(cleaned);
-} catch {
-  console.warn("AI did not return JSON, fallback parsing...");
-  toast.error("⚠️ Could not parse AI response.");
-}
-
-// Merge with tasks
-const allTasks = [...tasks.todo, ...tasks.inProgress, ...tasks.done];
-const merged: AIResult[] = parsed.map((p) => {
-  const task = allTasks.find((t) => t.id === p.id);
-  return {
-    id: p.id,
-    title: task?.title || "Unknown Task",
-    oldPriority: (task?.priority as Priority) || "P3",
-    newPriority: p.newPriority,
-  };
-});
-
-setResults(merged);
-
+      setResults(merged);
     } catch (err) {
       console.error("AI Prioritize Error:", err);
       toast.error("⚠️ AI prioritization failed. Please try again.");
@@ -100,6 +72,7 @@ setResults(merged);
       setLoading(false);
     }
   };
+
 
   const handleSubmit = async () => {
     try {

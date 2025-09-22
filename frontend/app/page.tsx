@@ -70,18 +70,13 @@ export default function Home() {
   const handleSummarize = async () => {
     setLoadingSummary(true);
     setIsDialogOpen(true);
+
     try {
       const prompt = `
         You are an expert project manager. Analyze the following tasks and write a short but appealing **Project Status Report**.
-        
-        🔹 Structure:
-        - A short **executive summary** in 2–3 lines.
-        - Clear **sections with bold titles** (Todo, In Progress, Done).
-        - *Insightful comments* about progress (e.g., blockers, progress pace, bottlenecks).
-        - Use ✅, ⚠️, ⏳ icons where relevant for visual appeal.
-        - Keep it concise but engaging.
-
-        🔹 Tasks:
+        - Add an executive summary (2–3 lines).
+        - Group tasks under **Todo, In Progress, Done**.
+        - Include *insights* and use icons ✅, ⚠️, ⏳.
 
         Todo:
         ${tasks.todo.map((t) => `- ${t.title} | ${t.description || "No description"}`).join("\n")}
@@ -93,17 +88,14 @@ export default function Home() {
         ${tasks.done.map((t) => `- ${t.title} | ${t.description || "No description"}`).join("\n")}
       `;
 
-      const client = new OpenAI({
-        apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
-        dangerouslyAllowBrowser: true,
+      const res = await fetch("/api/summarize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
       });
 
-      const response = await client.chat.completions.create({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt }],
-      });
-
-      setSummary(response.choices[0].message.content ?? "No summary generated.");
+      const data = await res.json();
+      setSummary(data.summary ?? "No summary generated.");
     } catch (err) {
       console.error("AI Summarizer Error:", err);
       setSummary("⚠️ AI summarizer failed. Please try again later.");
@@ -111,6 +103,7 @@ export default function Home() {
       setLoadingSummary(false);
     }
   };
+
 
   const handleLogout = () => {
     dispatch(logout());
